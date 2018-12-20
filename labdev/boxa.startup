@@ -2,3 +2,5 @@
 ifconfig eth0 172.28.16.2/20
 ifconfig eth1 111.54.88.13/8
 /etc/init.d/quagga start
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+ 
