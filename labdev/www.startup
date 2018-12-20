@@ -1,2 +1,5 @@
 dhclient
+
+ifconfig eth0 172.18.31.3/26
+route add default gw 172.18.31.2 eth0
 apache2ctl start

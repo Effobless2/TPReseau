@@ -1,3 +1,4 @@
 #TODO
-
+ifconfig eth0 172.28.16.3/20
+route add default gw 172.28.16.2 eth0
 /etc/init.d/dhcp3-server start
