@@ -1,4 +1,4 @@
-#dhclient
+dhclient
 
-ifconfig eth0 172.28.16.1/20
-route add default gw 172.28.16.2 eth0
+#ifconfig eth0 172.28.16.1/20
+#route add default gw 172.28.16.2 eth0
