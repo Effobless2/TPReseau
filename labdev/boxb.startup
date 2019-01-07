@@ -4,4 +4,4 @@ ifconfig eth0 172.18.31.2/26
 ifconfig eth1 111.12.247.198/8
 /etc/init.d/quagga start
 /etc/init.d/dhcp3-server start
-#iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
