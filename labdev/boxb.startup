@@ -3,10 +3,27 @@
 ifconfig eth0 172.18.31.2/26
 ifconfig eth1 111.12.247.198/8
 /etc/init.d/quagga start
+
+#Lancement du serveur dhcp
 /etc/init.d/dhcp3-server start
+
+#permettre l'accès aux machine du réseau lanB à l'extérieur en s'identifiant par l'adresse IP de eth1 de boxB
+##ce qui sort de eth1 est identifié par l'IP de eth1 (-o = output, MASQUERADE = change l'ip source du paquet en ip de eth1|   <=== Tu supprimes cette ligne quand t'en a plus besoin
+##POSTROUTING c'est après qu'on ai calculé où on doit l'envoyer et juste avant de l'envoyer dans le canal. PREROUTING c'est quand on reçoit le paquet mais qu'on sait pas encore quoi en faire
 iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+
+#règle permettant à l'extérieur d'accéder à www
+##ce qui vient d'eth1 et qui souhaite accéder au port 80 (uniquement utilisée pour les requetes HTTP) est redirigé vers www (-i = input, -p = protocol, --dport 80 = à destination du port 80, --to-destination = t'a pas besoin que je t'explique)
 iptables -t nat -A PREROUTING -i eth1 -p TCP --dport 80 -j DNAT --to-destination 172.18.31.3:80
 
+
+#Bonus
+
+##règles permettant à rediriger les requetes venant de lanB et souhaitant se diriger vers l'eth1 de boxb et accéder au port 80 vers www
+##DNAT = Dynamic NAT 
 iptables -t nat -A PREROUTING -i eth0 -s 172.18.31.0/26 -d 111.12.247.198/8 -p TCP --dport 80 -j DNAT --to-destination 172.18.31.3:80
+
+#règle permettant de modifier la source du paquet redirigé précédemment afin que la réponse de www ne soit pas envoyée directement à l'émetteur originel de la requete mais à boxB qui lui se chargera de transmettre le message
+## SNAT = Static NAT
 iptables -t nat -A POSTROUTING -s 172.18.31.0/26 -d 172.18.31.3/26 -p TCP --dport 80 -j SNAT --to-source 172.18.31.2
 
